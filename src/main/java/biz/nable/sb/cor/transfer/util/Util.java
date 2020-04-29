@@ -22,7 +22,7 @@ import java.util.function.Predicate;
 public class Util {
 
     @Autowired
-    private MessageSource messageSource;
+    MessageSource messageSource;
 
     public void generateCommonResponse(String errorCode, int status, CommonResponse commonResponse) {
         commonResponse.setErrorCode(errorCode);
@@ -34,5 +34,11 @@ public class Util {
     public <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
         Set<Object> seen = ConcurrentHashMap.newKeySet();
         return t -> seen.add(keyExtractor.apply(t));
+    }
+
+    public String getMessage(String errorCode) {
+        return messageSource.getMessage(errorCode, null,
+                "No message available",
+                LocaleContextHolder.getLocale());
     }
 }

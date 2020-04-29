@@ -5,9 +5,9 @@
  *  ******************************************************************************
  */
 
-package biz.nable.sb.cor.transfer.service.impl.validate;
+package biz.nable.sb.cor.transfer.validator.validate;
 
-import biz.nable.sb.cor.transfer.service.impl.validate.impl.*;
+import biz.nable.sb.cor.transfer.validator.validate.impl.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -28,7 +28,7 @@ public class ValidationBuilder {
     @Autowired
     CompanyLimitValidation companyLimitValidation;
     @Autowired
-    ApproverLimitValidation approverLimitValidation;
+    GroupLimitValidation approverLimitValidation;
 
     @Bean
     public List<TransferValidator> initTranValidationStack() {
