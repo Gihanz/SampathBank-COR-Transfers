@@ -1,4 +1,3 @@
-
 package biz.nable.sb.cor.transfer.db.models;
 
 import biz.nable.sb.cor.common.utility.RecordStatusEnum;
@@ -6,20 +5,18 @@ import biz.nable.sb.cor.transfer.constants.TransferFrequency;
 import biz.nable.sb.cor.transfer.constants.TransferMode;
 import biz.nable.sb.cor.transfer.constants.TransferType;
 import biz.nable.sb.cor.transfer.constants.YnFlagEnum;
-
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Date;
-
 
 @Data
 @Entity
-@Table(name = "SB_COR_TRANSFER_REQUEST")
-public class TransferRequest {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TRANSFER_REQUEST_SEQ")
-    @SequenceGenerator(name = "TRANSFER_REQUEST_SEQ", sequenceName = "SB_COR_TRANSFER_REQUEST_SEQ", allocationSize = 1)
+@Table(name = "SB_COR_TRANSFER_REQUEST_HISTORY")
+public class TransferRequestHistory {
+
     private Long id;
     private TransferType transferType;
     private TransferMode transferMode;
