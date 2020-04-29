@@ -8,7 +8,7 @@
 package biz.nable.sb.cor.transfer.request;
 
 import biz.nable.sb.cor.transfer.bean.TransferBean;
-import biz.nable.sb.cor.transfer.service.impl.validate.ValidatableRequest;
+import biz.nable.sb.cor.transfer.validator.validate.ValidatableRequest;
 
 public class SingleTransferRequest extends TransferBean implements ValidatableRequest {
 }

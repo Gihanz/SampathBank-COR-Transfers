@@ -5,7 +5,7 @@
  *  ******************************************************************************
  */
 
-package biz.nable.sb.cor.transfer.service.impl.validate;
+package biz.nable.sb.cor.transfer.validator.validate;
 
 public interface ValidatableRequest {
 }

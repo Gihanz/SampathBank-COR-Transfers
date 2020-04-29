@@ -16,7 +16,7 @@ public class ErrorCode {
     // Business
     public static final String VALIDATION_ERROR = "B400";
 
-    public static final String COMMISSION_RECORD_NOT_FOUND = "BC01";
+    public static final String VALIDATION_ERROR_BALANCE_CHECK = "BC01";
     public static final String INVALID_COMPANY_ID = "BC02";
     public static final String COMMISSION_PACKAGE_ALREADY_EXIST = "BC03";
     public static final String COMMISSION_TEMPLATE_ALREADY_EXIST = "BC04";

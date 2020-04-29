@@ -5,11 +5,11 @@
  *  ******************************************************************************
  */
 
-package biz.nable.sb.cor.transfer.service.impl;
+package biz.nable.sb.cor.transfer.validator;
 
 import biz.nable.sb.cor.transfer.response.CalculatedCommissionResponse;
-import biz.nable.sb.cor.transfer.service.impl.validate.TransferValidator;
-import biz.nable.sb.cor.transfer.service.impl.validate.ValidatableRequest;
+import biz.nable.sb.cor.transfer.validator.validate.TransferValidator;
+import biz.nable.sb.cor.transfer.validator.validate.ValidatableRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
