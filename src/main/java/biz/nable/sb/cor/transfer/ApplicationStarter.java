@@ -50,7 +50,6 @@ public class ApplicationStarter extends SpringBootServletInitializer {
     public static void main(String[] args) {
         configureApplication(new SpringApplicationBuilder()).run(args);
     }
-
     private static SpringApplicationBuilder configureApplication(SpringApplicationBuilder builder) {
         return builder.sources(ApplicationStarter.class);
     }

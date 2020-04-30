@@ -9,16 +9,18 @@ package biz.nable.sb.cor.transfer.db.models;
 
 import lombok.Data;
 
-import javax.persistence.*;
+
 import java.util.Date;
+import javax.persistence.*;
 
 @Data
 @Entity
 @Table(name = "SB_COR_TRANSFER_STATS")
 public class TransferStats {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TRANSFER_STATS_SEQ")
-    @SequenceGenerator(name = "TRANSFER_STATS_SEQ", sequenceName = "SB_COR_TRANSFER_STATS", allocationSize = 1)
+    @SequenceGenerator(name = "TRANSFER_STATS_SEQ", sequenceName = "SB_COR_TRANSFER_STATS_SEQ", allocationSize = 1)
     private Long id;
     private String companyId;
     private String userId;

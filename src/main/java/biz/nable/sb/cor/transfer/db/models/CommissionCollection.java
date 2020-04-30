@@ -18,9 +18,10 @@ import java.util.Date;
 @Entity
 @Table(name = "SB_COR_COMMISSION_COLLECTION")
 public class CommissionCollection {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COMMISSION_COLLECTION_SEQ")
-    @SequenceGenerator(name = "COMMISSION_COLLECTION_SEQ", sequenceName = "SB_COR_COMMISSION_COLLECTION", allocationSize = 1)
+    @SequenceGenerator(name = "COMMISSION_COLLECTION_SEQ", sequenceName = "SB_COR_COMMISSION_COLLECTION_SEQ", allocationSize = 1)
     private Long id;
     private Long transferId;
     private String companyId;

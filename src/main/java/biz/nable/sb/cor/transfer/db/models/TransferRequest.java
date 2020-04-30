@@ -11,7 +11,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
-
+import javax.persistence.Id;
 
 @Data
 @Entity

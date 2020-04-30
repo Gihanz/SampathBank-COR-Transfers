@@ -9,6 +9,7 @@ import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
@@ -17,6 +18,7 @@ import java.util.Date;
 @Table(name = "SB_COR_TRANSFER_REQUEST_HISTORY")
 public class TransferRequestHistory {
 
+    @Id
     private Long id;
     private TransferType transferType;
     private TransferMode transferMode;
