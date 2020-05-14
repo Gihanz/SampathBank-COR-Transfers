@@ -11,7 +11,6 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
-import javax.persistence.Id;
 
 @Data
 @Entity
@@ -45,8 +44,6 @@ public class TransferRequest {
     private String bankCode;
     @Column(length = 20)
     private String branchCode;
-    @Column(length = 20)
-    private String receiverMobile;
     /* Workflow and execution */
     private float commissionValue;
     private RecordStatusEnum commissionStatus;
@@ -55,6 +52,8 @@ public class TransferRequest {
     @Column(length = 20)
     private String wfValue;
     private RecordStatusEnum wfStatus;
+    @Column(length = 350)
+    private String wfComment;
     private RecordStatusEnum transferStatus;
     @Column(length = 20)
     private String transferCode;
@@ -68,7 +67,7 @@ public class TransferRequest {
     @Column(length = 50)
     private String receiverName;
     @Column(length = 20)
-    private String mCahReceiverMobile;
+    private String receiverMobile;
     @Column(length = 20)
     private String senderMobile;
     /* Corporate details */
@@ -83,4 +82,5 @@ public class TransferRequest {
     private Date endDate;
     private Date executionDate;
     private Long occurrence;
+    private Long scheduleId;
 }
