@@ -19,6 +19,8 @@ import biz.nable.sb.cor.transfer.response.GetTransferDetailsResponse;
 import biz.nable.sb.cor.transfer.response.ListOfCorporatePayeeTemplate;
 import biz.nable.sb.cor.transfer.response.ListOfFailedTransferDetails;
 import biz.nable.sb.cor.transfer.response.ListOfTransferStatusDetails;
+import biz.nable.sb.cor.transfer.util.ErrorCode;
+import biz.nable.sb.cor.transfer.util.ErrorDescription;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -31,8 +33,13 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,6 +56,11 @@ public class AdminService {
     
     @Autowired
     private CorporatePayeeRepository corporatePayeeRepository;
+    
+    @Autowired
+    MessageSource messageSource;
+    
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
      
     @Transactional
     public GetCorporatePayeeTemplateResponse getCorporatePayeeTemplate(String companyId, String userId, String requestId) {
@@ -104,58 +116,74 @@ public class AdminService {
     	Iterable<TransferRequestHistory> it = transferHistoryRepository.findByRetryFlagAndTransferStatus(retryFlag, transferStatus);
     	Iterator<TransferRequestHistory> iterator = it.iterator();
     	
-    	Set<ListOfFailedTransferDetails> listOfFailedTransferDetailsSet = new HashSet<>();
+    	if (!iterator.hasNext()){
+            logger.error(
+                    messageSource.getMessage(ErrorCode.NO_TRANSFER_HISTORY_RECORD_FOUND,
+                            new Object[] {ErrorDescription.NO_TRANSFER_HISTORY_RECORD_FOUND}, LocaleContextHolder.getLocale()));
+            getFailedTransferDetailsResponse.setErrorCode(ErrorCode.NO_TRANSFER_HISTORY_RECORD_FOUND);
+            getFailedTransferDetailsResponse.setReturnCode(HttpStatus.NOT_FOUND.value());
+            getFailedTransferDetailsResponse.setReturnMessage(
+                    messageSource.getMessage(ErrorCode.NO_TRANSFER_HISTORY_RECORD_FOUND,
+                            new Object[] {ErrorDescription.NO_TRANSFER_HISTORY_RECORD_FOUND}, LocaleContextHolder.getLocale()));
+        }else {
     	
-    	while (iterator.hasNext()) {
-    		ListOfFailedTransferDetails listOfFailedTransferDetails = new ListOfFailedTransferDetails();
-    		TransferRequestHistory transferRequestHistory = iterator.next();
-
-    		listOfFailedTransferDetails.setTransferReqId(transferRequestHistory.getId());
-    		listOfFailedTransferDetails.setTransferType(transferRequestHistory.getTransferType());
-    		listOfFailedTransferDetails.setTransferMode(transferRequestHistory.getTransferMode());
-    		listOfFailedTransferDetails.setFromAccount(transferRequestHistory.getFromAccount());
-    		listOfFailedTransferDetails.setToAccount(transferRequestHistory.getToAccount());
-    		listOfFailedTransferDetails.setAmount(transferRequestHistory.getAmount());
-    		listOfFailedTransferDetails.setCompanyRef(transferRequestHistory.getCompanyRef());
-    		listOfFailedTransferDetails.setRemark(transferRequestHistory.getRemark());
-    		listOfFailedTransferDetails.setScheduleFlag(transferRequestHistory.getScheduleFlag());
-    		listOfFailedTransferDetails.setCreatedBy(transferRequestHistory.getCreatedUser());
-    		listOfFailedTransferDetails.setCreatedOn(transferRequestHistory.getCreatedDate());
-    		listOfFailedTransferDetails.setCompanyId(transferRequestHistory.getCompanyId());
-    		listOfFailedTransferDetails.setAccountName(transferRequestHistory.getAccountName());    		
-    		listOfFailedTransferDetails.setBankCode(transferRequestHistory.getBankCode());
-    		listOfFailedTransferDetails.setBranchCode(transferRequestHistory.getBranchCode());    		
-    		listOfFailedTransferDetails.setCommissionAccount(transferRequestHistory.getCommissionAccount());
-    		listOfFailedTransferDetails.setCommissionValue(transferRequestHistory.getCommissionValue());
-    		listOfFailedTransferDetails.setCommissionStatus(transferRequestHistory.getCommissionStatus());
-    		listOfFailedTransferDetails.setWfStatus(transferRequestHistory.getWfStatus());
-    		listOfFailedTransferDetails.setWfComment(transferRequestHistory.getWfComment());
-    		listOfFailedTransferDetails.setTransferStatus(transferRequestHistory.getTransferStatus());
-    		listOfFailedTransferDetails.setTransferCode(transferRequestHistory.getTransferCode());
-    		listOfFailedTransferDetails.setTransferReference(transferRequestHistory.getTransferReference());
-    		listOfFailedTransferDetails.setRetryFlag(transferRequestHistory.getRetryFlag());
-    		listOfFailedTransferDetails.setRetryRef(transferRequestHistory.getRetryRef());
-    		listOfFailedTransferDetails.setReceiverNic(transferRequestHistory.getReceiverNic());
-    		listOfFailedTransferDetails.setReceiverName(transferRequestHistory.getReceiverName());
-    		listOfFailedTransferDetails.setSenderMobile(transferRequestHistory.getSenderMobile());    		
-    		listOfFailedTransferDetails.setReceiverMobile(transferRequestHistory.getReceiverMobile());
-    		listOfFailedTransferDetails.setCorporatePayee(transferRequestHistory.getCorporatePayee());
-    		listOfFailedTransferDetails.setOccurrence(transferRequestHistory.getOccurrence());
-    		listOfFailedTransferDetails.setTransferDate(transferRequestHistory.getTransferDate());
-    		listOfFailedTransferDetails.setTransferFrequency(transferRequestHistory.getTransferFrequency());
-    		listOfFailedTransferDetails.setTransferCount(transferRequestHistory.getTransferCount());
-    		listOfFailedTransferDetails.setPeriod(transferRequestHistory.getPeriod());
-    		listOfFailedTransferDetails.setStartDate(transferRequestHistory.getStartDate());
-    		listOfFailedTransferDetails.setEndDate(transferRequestHistory.getEndDate());
-    		listOfFailedTransferDetails.setExecutionDate(transferRequestHistory.getExecutionDate());
-    		
-    		listOfFailedTransferDetailsSet.add(listOfFailedTransferDetails);
+	    	Set<ListOfFailedTransferDetails> listOfFailedTransferDetailsSet = new HashSet<>();
+	    	
+	    	while (iterator.hasNext()) {
+	    		ListOfFailedTransferDetails listOfFailedTransferDetails = new ListOfFailedTransferDetails();
+	    		TransferRequestHistory transferRequestHistory = iterator.next();
+	
+	    		listOfFailedTransferDetails.setTransferReqId(transferRequestHistory.getId());
+	    		listOfFailedTransferDetails.setTransferType(transferRequestHistory.getTransferType());
+	    		listOfFailedTransferDetails.setTransferMode(transferRequestHistory.getTransferMode());
+	    		listOfFailedTransferDetails.setFromAccount(transferRequestHistory.getFromAccount());
+	    		listOfFailedTransferDetails.setToAccount(transferRequestHistory.getToAccount());
+	    		listOfFailedTransferDetails.setAmount(transferRequestHistory.getAmount());
+	    		listOfFailedTransferDetails.setCompanyRef(transferRequestHistory.getCompanyRef());
+	    		listOfFailedTransferDetails.setRemark(transferRequestHistory.getRemark());
+	    		listOfFailedTransferDetails.setScheduleFlag(transferRequestHistory.getScheduleFlag());
+	    		listOfFailedTransferDetails.setCreatedBy(transferRequestHistory.getCreatedUser());
+	    		listOfFailedTransferDetails.setCreatedOn(transferRequestHistory.getCreatedDate());
+	    		listOfFailedTransferDetails.setCompanyId(transferRequestHistory.getCompanyId());
+	    		listOfFailedTransferDetails.setAccountName(transferRequestHistory.getAccountName());    		
+	    		listOfFailedTransferDetails.setBankCode(transferRequestHistory.getBankCode());
+	    		listOfFailedTransferDetails.setBranchCode(transferRequestHistory.getBranchCode());    		
+	    		listOfFailedTransferDetails.setCommissionAccount(transferRequestHistory.getCommissionAccount());
+	    		listOfFailedTransferDetails.setCommissionValue(transferRequestHistory.getCommissionValue());
+	    		listOfFailedTransferDetails.setCommissionStatus(transferRequestHistory.getCommissionStatus());
+	    		listOfFailedTransferDetails.setWfStatus(transferRequestHistory.getWfStatus());
+	    		listOfFailedTransferDetails.setWfComment(transferRequestHistory.getWfComment());
+	    		listOfFailedTransferDetails.setTransferStatus(transferRequestHistory.getTransferStatus());
+	    		listOfFailedTransferDetails.setTransferCode(transferRequestHistory.getTransferCode());
+	    		listOfFailedTransferDetails.setTransferReference(transferRequestHistory.getTransferReference());
+	    		listOfFailedTransferDetails.setRetryFlag(transferRequestHistory.getRetryFlag());
+	    		listOfFailedTransferDetails.setRetryRef(transferRequestHistory.getRetryRef());
+	    		listOfFailedTransferDetails.setReceiverNic(transferRequestHistory.getReceiverNic());
+	    		listOfFailedTransferDetails.setReceiverName(transferRequestHistory.getReceiverName());
+	    		listOfFailedTransferDetails.setSenderMobile(transferRequestHistory.getSenderMobile());    		
+	    		listOfFailedTransferDetails.setReceiverMobile(transferRequestHistory.getReceiverMobile());
+	    		listOfFailedTransferDetails.setCorporatePayee(transferRequestHistory.getCorporatePayee());
+	    		listOfFailedTransferDetails.setOccurrence(transferRequestHistory.getOccurrence());
+	    		listOfFailedTransferDetails.setTransferDate(transferRequestHistory.getTransferDate());
+	    		listOfFailedTransferDetails.setTransferFrequency(transferRequestHistory.getTransferFrequency());
+	    		listOfFailedTransferDetails.setTransferCount(transferRequestHistory.getTransferCount());
+	    		listOfFailedTransferDetails.setPeriod(transferRequestHistory.getPeriod());
+	    		listOfFailedTransferDetails.setStartDate(transferRequestHistory.getStartDate());
+	    		listOfFailedTransferDetails.setEndDate(transferRequestHistory.getEndDate());
+	    		listOfFailedTransferDetails.setExecutionDate(transferRequestHistory.getExecutionDate());
+	    		
+	    		listOfFailedTransferDetailsSet.add(listOfFailedTransferDetails);
+	        }
+	    	
+	    	getFailedTransferDetailsResponse.setListOfFailedTransfers(listOfFailedTransferDetailsSet);
+	    	
+	    	getFailedTransferDetailsResponse.setReturnCode(HttpStatus.OK.value());
+	    	getFailedTransferDetailsResponse.setErrorCode(ErrorCode.OPERATION_SUCCESS);
+	    	getFailedTransferDetailsResponse.setReturnMessage(
+	                messageSource.getMessage(ErrorCode.OPERATION_SUCCESS,
+	                        new Object[] {ErrorDescription.GET_FAILD_TRANSFER_DETAILS_SUCCESS}, LocaleContextHolder.getLocale()));
+	    	logger.info("GetFailedTransferDetails method response: {} ", getFailedTransferDetailsResponse);
         }
-    	
-    	getFailedTransferDetailsResponse.setListOfFailedTransfers(listOfFailedTransferDetailsSet);
-    	getFailedTransferDetailsResponse.setReturnCode(200);
-    	getFailedTransferDetailsResponse.setReturnMessage("Get failed transfers request successful");
-    	
     	return getFailedTransferDetailsResponse;
     }
      
