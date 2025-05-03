@@ -1,7 +1,7 @@
 /*
  * ******************************************************************************
  *  * Copyright 2020 (C) N*able
- *  * @author Roshan Wijendra
+ *  * @author Sampath Bank
  *  ******************************************************************************
  */
 package biz.nable.sb.cor.transfer.config;
